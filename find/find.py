@@ -38,28 +38,34 @@ def main(argv):
 
     for contour in contours:
         approx = cv2.approxPolyDP(contour,0.01*cv2.arcLength(contour,True),True)
-        area = cv2.contourArea(contour)
-        if ((len(approx) == 3) & (area > 6000) & (area < 20000)):
-            print (len(approx),area)
-            triangles.append(contour)
-        if ((len(approx) == 4) & (area > 10000) & (area < 20000)):
-            print (len(approx),area)
-            squares.append(contour)
-        if ((len(approx) > 8) & (area > 10000) & (area < 20000)):
-            print (len(approx),area)
-            circles.append(contour)
-            
-    cv2.drawContours(frame, squares,  -1, (255,0,0), 3)
-    cv2.drawContours(frame, circles,  -1, (0,255,0), 3)
-    cv2.drawContours(frame, triangles,  -1, (0,0,255), 3)
+        
+        (x, y, w, h) = cv2.boundingRect(approx)
+        aspectRatio = w / float(h)
 
+        area = cv2.contourArea(contour)
+        M = cv2.moments(approx)
+        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+        # square   
+        if ((len(approx) == 4) and np.isclose(area,15000,0,2000) and np.isclose(aspectRatio,1,0,0.1)): 
+            squares.append((contour,center))
+
+        # circle
+        if ((len(approx) > 8) and np.isclose(area,15000,1,2000) and np.isclose(aspectRatio,1,0,0.1)):
+            circles.append((contour,center))
+     
+    for square in squares:       
+        cv2.drawContours(frame, [square[0]],  -1, (255,0,0), 3)
+        drawCross(frame,square[1], (255,0,0))
+    for circle in circles:
+        cv2.drawContours(frame, [circle[0]],  -1, (0,255,0), 3)
+        drawCross(frame,circle[1], (0,255,0))
     #print contours
     cv2.imshow(window_name, frame)
 
     while(True):
         if cv2.waitKey(1) & 0xFF == ord('q'):
         	break
-            
+
     cv2.destroyAllWindows()
     return 0
 
@@ -68,6 +74,13 @@ def isCv2():
 
 def isCv3():
     return (cv_version_major == '3')
+
+def drawCross(img, center, color):    
+    (cX,cY) = center
+    (startX, endX) = (int(cX - 15), int(cX + 15))
+    (startY, endY) = (int(cY - 15), int(cY + 15))
+    cv2.line(img, (startX, cY), (endX, cY), color, 3)
+    cv2.line(img, (cX, startY), (cX, endY), color, 3)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
