@@ -3,11 +3,9 @@ import cv2
 import numpy as np
 
 #  Global Variables
-
-
-
 frame = None
 window_name = 'Smoothing Demo'
+cv_version_major = cv2.__version__.split(".")[0]
 
 
 def main(argv):
@@ -16,7 +14,6 @@ def main(argv):
     # Load the source image
     imageName = argv[0] if len(argv) > 0 else "../data/circle_square.jpg"
 
-    global frame
     frame = cv2.imread(imageName, 1)
     if frame is None:
         print ('Error opening image')
@@ -26,8 +23,12 @@ def main(argv):
     # find square   
     imgray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     (ret,thresh) = cv2.threshold(imgray,127,255,0)
+
     # in copencv 3 you need 3 return parameters!
-    (im, contours, hierarchy) = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    if isCv2():
+        (contours, hierarchy) = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    elif isCv3():
+        (im, contours, hierarchy) = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
 
     #find circle
@@ -58,11 +59,20 @@ def main(argv):
     while(True):
         if cv2.waitKey(1) & 0xFF == ord('q'):
         	break
-
+            
+    cv2.destroyAllWindows()
     return 0
 
-cv2.destroyAllWindows()
+def isCv2():
+    return (cv_version_major == '2')
 
+def isCv3():
+    return (cv_version_major == '3')
 
 if __name__ == "__main__":
     main(sys.argv[1:])
+
+
+
+
+
