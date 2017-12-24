@@ -1,12 +1,12 @@
 import sys
 import cv2
 import numpy as np
+sys.path.append('../../')
+import cv_experiments.shared.utils as su
 
 #  Global Variables
 frame = None
 window_name = 'detect square and circle'
-cv_version_major = cv2.__version__.split(".")[0]
-
 
 def main(argv):
     cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
@@ -25,9 +25,9 @@ def main(argv):
     (ret,thresh) = cv2.threshold(imgray,127,255,0)
 
     # in copencv 3 you need 3 return parameters!
-    if isCv2():
+    if su.isCv2():
         (contours, hierarchy) = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    elif isCv3():
+    elif su.isCv3():
         (im, contours, hierarchy) = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
 
@@ -70,11 +70,6 @@ def main(argv):
     cv2.destroyAllWindows()
     return 0
 
-def isCv2():
-    return (cv_version_major == '2')
-
-def isCv3():
-    return (cv_version_major == '3')
 
 def drawCross(img, center, color):    
     (cX,cY) = center

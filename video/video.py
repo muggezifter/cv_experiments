@@ -1,18 +1,17 @@
 import numpy as np
 import cv2
 import sys
-
-
-cv_version_major = cv2.__version__.split(".")[0]
+sys.path.append('../../')
+import cv_experiments.shared.utils as su
 
 def main(argv):
     cap = cv2.VideoCapture('../data/car-overhead-1.avi')
     printed = False
 
-    if isCv2():
+    if su.isCv2():
         fps = video.get(cv2.cv.CV_CAP_PROP_FPS)
         print "Frames per second using video.get(cv2.cv.CV_CAP_PROP_FPS): {0}".format(fps)
-    elif isCv3():
+    elif su.isCv3():
         fps = cap.get(cv2.CAP_PROP_FPS)
         print "Frames per second using video.get(cv2.CAP_PROP_FPS) : {0}".format(fps)
 
@@ -31,12 +30,6 @@ def main(argv):
 
     cap.release()
     cv2.destroyAllWindows()
-
-def isCv2():
-    return (cv_version_major == '2')
-
-def isCv3():
-    return (cv_version_major == '3')
 
 if __name__ == "__main__":
     main(sys.argv[1:])
