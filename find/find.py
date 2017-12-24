@@ -1,7 +1,10 @@
 import sys
+import os
 import cv2
 import numpy as np
-sys.path.append('../../')
+
+DIRNAME = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(DIRNAME+'/../../')
 import cv_experiments.shared.utils as su
 
 #  Global Variables
@@ -12,7 +15,7 @@ def main(argv):
     cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
 
     # Load the source image
-    imageName = argv[0] if len(argv) > 0 else "../data/circle_square.jpg"
+    imageName = argv[0] if len(argv) > 0 else DIRNAME + "/../data/circle_square.jpg"
 
     frame = cv2.imread(imageName, 1)
     if frame is None:

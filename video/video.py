@@ -1,11 +1,15 @@
+import sys
+import os
+
+DIRNAME = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(DIRNAME+'/../../')
+
 import numpy as np
 import cv2
-import sys
-sys.path.append('../../')
 import cv_experiments.shared.utils as su
 
 def main(argv):
-    cap = cv2.VideoCapture('../data/car-overhead-1.avi')
+    cap = cv2.VideoCapture(DIRNAME +'/../data/car-overhead-1.avi')
     printed = False
 
     if su.isCv2():
