@@ -4,7 +4,7 @@ import numpy as np
 
 #  Global Variables
 frame = None
-window_name = 'Smoothing Demo'
+window_name = 'detect square and circle'
 cv_version_major = cv2.__version__.split(".")[0]
 
 
@@ -38,7 +38,6 @@ def main(argv):
 
     for contour in contours:
         approx = cv2.approxPolyDP(contour,0.01*cv2.arcLength(contour,True),True)
-        
         (x, y, w, h) = cv2.boundingRect(approx)
         aspectRatio = w / float(h)
 
@@ -56,9 +55,11 @@ def main(argv):
     for square in squares:       
         cv2.drawContours(frame, [square[0]],  -1, (255,0,0), 3)
         drawCross(frame,square[1], (255,0,0))
+        break # only use the first one
     for circle in circles:
         cv2.drawContours(frame, [circle[0]],  -1, (0,255,0), 3)
         drawCross(frame,circle[1], (0,255,0))
+        break # only use the first one
     #print contours
     cv2.imshow(window_name, frame)
 
