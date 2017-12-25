@@ -9,11 +9,12 @@ import cv2
 import cv_experiments.shared.utils as su
 
 def main(argv):
-    cap = cv2.VideoCapture(DIRNAME +'/../data/car-overhead-1.avi')
+    #cap = cv2.VideoCapture(DIRNAME +'/../data/car-overhead-1.avi')
+    cap = cv2.VideoCapture(DIRNAME +'/../data/test.ogg')
     printed = False
 
     if su.isCv2():
-        fps = video.get(cv2.cv.CV_CAP_PROP_FPS)
+        fps = cap.get(cv2.cv.CV_CAP_PROP_FPS)
         print "Frames per second using video.get(cv2.cv.CV_CAP_PROP_FPS): {0}".format(fps)
     elif su.isCv3():
         fps = cap.get(cv2.CAP_PROP_FPS)
