@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 import os
 
@@ -10,7 +12,7 @@ import cv_experiments.shared.utils as su
 
 def main(argv):
     #cap = cv2.VideoCapture(DIRNAME +'/../data/car-overhead-1.avi')
-    cap = cv2.VideoCapture(DIRNAME +'/../data/test.avi')
+    cap = cv2.VideoCapture(DIRNAME +'/../data/scaled.mp4')
     printed = False
 
     if su.isCv2():
