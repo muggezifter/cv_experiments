@@ -10,7 +10,7 @@ import cv_experiments.shared.utils as su
 
 def main(argv):
     #cap = cv2.VideoCapture(DIRNAME +'/../data/car-overhead-1.avi')
-    cap = cv2.VideoCapture(DIRNAME +'/../data/test.ogg')
+    cap = cv2.VideoCapture(DIRNAME +'/../data/test.avi')
     printed = False
 
     if su.isCv2():
