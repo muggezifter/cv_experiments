@@ -6,9 +6,19 @@ import os
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(DIRNAME+'/../../')
 
+import argparse
 import numpy as np
 import cv2
 import cv_experiments.shared.utils as su
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-g", "--gamma", 
+    required=False, 
+    default='1', 
+    help="Gamma correction value (default = 1)")
+args = vars(ap.parse_args())
+mygamma = float(args["gamma"])
+
 
 def main(argv):
     #cap = cv2.VideoCapture(DIRNAME +'/../data/car-overhead-1.avi')
@@ -25,14 +35,24 @@ def main(argv):
 
     while(cap.isOpened()):
         ret, frame = cap.read()
+        frame = su.adjustGamma(frame,mygamma)
 
         if frame is not None:
-    	    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            contours = su.getContours(frame)
+            for contour in contours:
+                peri = cv2.arcLength(contour, True)
+                if peri >= 200 and peri <= 350:
+                    approx = cv2.approxPolyDP(contour, 16, True)
+                    print len(approx)
+                    print peri
+                    cv2.drawContours(frame, approx,  -1, (255,0,0), 3)
+                    #cv2.drawContours(frame, [contour],  -1, (255,0,0), 3)
     	    cv2.imshow('frame',frame)
-    	elif printed is False:
-    		print "the end"
-    		printed = True
-    	if cv2.waitKey(1) & 0xFF == ord('q'):
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        elif printed is False:
+            print "the end"
             break
 
     cap.release()
