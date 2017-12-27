@@ -44,7 +44,6 @@ def main(argv):
     mygamma = float(args["gamma"])
     #cap = cv2.VideoCapture(DIRNAME +'/../data/car-overhead-1.avi')
     cap = cv2.VideoCapture(DIRNAME +'/../data/scaled.mp4')
-    printed = False
 
     cv2.namedWindow("frame")
     cv2.namedWindow("parameters")
@@ -53,9 +52,9 @@ def main(argv):
     cv2.createTrackbar("Canny: center","parameters",100,255,cannyCenterChange)
     cv2.createTrackbar("Canny: spread","parameters",33,100,cannySpreadChange)
 
-    blank_image = np.zeros((300,600,3), np.uint8)
-    blank_image[:] = (200,200,200)
-    cv2.imshow("parameters",blank_image)
+    feedback_bg = np.zeros((300,600,3), np.uint8)
+    feedback_bg[:] = (200,200,200)
+    cv2.imshow("parameters",feedback_bg)
 
     if su.isCv2():
         fps = cap.get(cv2.cv.CV_CAP_PROP_FPS)
@@ -82,22 +81,22 @@ def main(argv):
             text_y = 30
             cv2.imshow('frame',frame)
 
-            blank_image[:] = (127,127,127)
+            feedback_bg[:] = (127,127,127)
 
             if parameters_changed == True:
                 status = ""
                 for item in canny.items():
                     status = "canny " + item[0] + ": " + str(item[1]) 
-                    cv2.putText(blank_image, status, (22, text_y), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1)
+                    cv2.putText(feedback_bg, status, (22, text_y), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1)
                     text_y = text_y + 15
     	    
-                cv2.imshow('parameters',blank_image)
+                cv2.imshow('parameters',feedback_bg)
                 parameters_changed = False
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        elif printed is False:
+        else:
             print "the end"
             break
 

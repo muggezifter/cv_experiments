@@ -30,12 +30,14 @@ def getTable(gamma):
         for i in np.arange(0, 256)]).astype("uint8")
     return table
 
-def getContours(img,show=(),canny = None):
+def getContours(img,show=(),canny_params = None):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     if 'gray' in show: cv2.imshow('gray',gray)
     blurred = cv2.GaussianBlur(gray, (7, 7), 0)
     if 'blurred' in show: cv2.imshow('blurred',blurred)
-    edged = cv2.Canny(blurred,  canny["lower"] if canny else 50,canny["upper"] if canny else 150)
+    edged = cv2.Canny(blurred,  
+        canny_params["lower"] if canny_params else 50,
+        canny_params["upper"] if canny_params else 150)
     if 'edged' in show: cv2.imshow('edged',edged)
     # find contours in the edge map
     if isCv2():
