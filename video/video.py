@@ -12,20 +12,17 @@ import cv2
 import cv_experiments.shared.utils as su
 
 
-
-
 def cannyCenterChange(val):
     global canny
     canny["center"] = val
-    setCannyUpperLower()
-
+    setCannyParameters()
 
 def cannySpreadChange(val):
     global canny
     canny["spread"] = val
-    setCannyUpperLower()
+    setCannyParameters()
 
-def setCannyUpperLower():
+def setCannyParameters():
     global canny, parameters_changed
     canny["lower"] = int(max(0, (1.0 - 0.01*canny["spread"])* canny["center"]))
     canny["upper"] = int(min(255, (1.0 + 0.01*canny["spread"]) * canny["center"]))
