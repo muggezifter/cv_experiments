@@ -88,15 +88,13 @@ def main(argv):
                     approx = cv2.approxPolyDP(contour, 16, True)
                     #print len(approx)
                     #print peri
-                    cv2.drawContours(frame, approx,  -1, (255,0,0), 3)
-                    #cv2.drawContours(frame, [contour],  -1, (255,0,0), 3)
+                    cv2.drawContours(frame, approx,  -1, (255,0,0), 5)
+                    cv2.drawContours(frame, [contour],  -1, (0,255,0), 3)
 
             
             cv2.imshow('frame',frame)
 
-            
-
-            if parameters_changed == True:
+            if parameters_changed == True: # update feedback
                 text_y = 30
                 feedback_bg[:] = (127,127,127)
                 status = "gamma: " + str(mygamma) 
