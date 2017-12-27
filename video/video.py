@@ -14,8 +14,8 @@ import cv_experiments.shared.utils as su
 
 def restricted_float(x):
     x = float(x)
-    if x < 0.0 or x > 10.0:
-        raise argparse.ArgumentTypeError("%r not in range [0.0, 10.0]"%(x,))
+    if x < 1.0 or x > 10.0:
+        raise argparse.ArgumentTypeError("%r not in range [1.0, 10.0]"%(x,))
     return x
 
 def cannyCenterChange(val):
@@ -39,16 +39,17 @@ def gammaChange(val):
 
 def main(argv):
     global canny
-    canny = { 'center' : 100, 'spread' : 33, 'upper' : 133.0, 'lower' : 67.0 }
+    global mygamma
     global parameters_changed 
 
-    global mygamma
+    canny = { 'center' : 100, 'spread' : 33, 'upper' : 133.0, 'lower' : 67.0 }
+    
     ap = argparse.ArgumentParser()
     ap.add_argument("-g", "--gamma", 
         type=restricted_float,
         required=False, 
         default='1', 
-        help="Gamma correction value (default = 1)")
+        help="Gamma correction value (between 1.0 and 10.0, default = 1.0)")
     args = vars(ap.parse_args())
     mygamma = float(args["gamma"])
 
@@ -88,8 +89,9 @@ def main(argv):
                     approx = cv2.approxPolyDP(contour, 16, True)
                     #print len(approx)
                     #print peri
-                    cv2.drawContours(frame, approx,  -1, (255,0,0), 5)
                     cv2.drawContours(frame, [contour],  -1, (0,255,0), 3)
+                    cv2.drawContours(frame, approx,  -1, (255,0,0), 5)
+                    
 
             
             cv2.imshow('frame',frame)
