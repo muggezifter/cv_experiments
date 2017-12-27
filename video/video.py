@@ -12,20 +12,28 @@ import cv2
 import cv_experiments.shared.utils as su
 
 
+def restricted_float(x):
+    x = float(x)
+    if x < 0.0 or x > 10.0:
+        raise argparse.ArgumentTypeError("%r not in range [0.0, 10.0]"%(x,))
+    return x
+
 def cannyCenterChange(val):
-    global canny
-    canny["center"] = val
-    setCannyParameters()
+    updateCannyParameters("center",val)
 
 def cannySpreadChange(val):
-    global canny
-    canny["spread"] = val
-    setCannyParameters()
+    updateCannyParameters("spread",val)
 
-def setCannyParameters():
+def updateCannyParameters(key, val):
     global canny, parameters_changed
+    canny[key] = val
     canny["lower"] = int(max(0, (1.0 - 0.01*canny["spread"])* canny["center"]))
     canny["upper"] = int(min(255, (1.0 + 0.01*canny["spread"]) * canny["center"]))
+    parameters_changed = True
+
+def gammaChange(val):
+    global mygamma, parameters_changed
+    mygamma = 0.1 * (float(val)+10)
     parameters_changed = True
 
 
@@ -33,15 +41,18 @@ def main(argv):
     global canny
     canny = { 'center' : 100, 'spread' : 33, 'upper' : 133.0, 'lower' : 67.0 }
     global parameters_changed 
-    parameters_changed = True
 
+    global mygamma
     ap = argparse.ArgumentParser()
     ap.add_argument("-g", "--gamma", 
+        type=restricted_float,
         required=False, 
         default='1', 
         help="Gamma correction value (default = 1)")
     args = vars(ap.parse_args())
     mygamma = float(args["gamma"])
+
+    parameters_changed = True
     #cap = cv2.VideoCapture(DIRNAME +'/../data/car-overhead-1.avi')
     cap = cv2.VideoCapture(DIRNAME +'/../data/scaled.mp4')
 
@@ -49,8 +60,10 @@ def main(argv):
     cv2.namedWindow("parameters")
     
     
+    cv2.createTrackbar("Gamma","parameters",int(mygamma * 10),90,gammaChange)
     cv2.createTrackbar("Canny: center","parameters",100,255,cannyCenterChange)
     cv2.createTrackbar("Canny: spread","parameters",33,100,cannySpreadChange)
+
 
     feedback_bg = np.zeros((300,600,3), np.uint8)
     feedback_bg[:] = (200,200,200)
@@ -78,13 +91,17 @@ def main(argv):
                     cv2.drawContours(frame, approx,  -1, (255,0,0), 3)
                     #cv2.drawContours(frame, [contour],  -1, (255,0,0), 3)
 
-            text_y = 30
+            
             cv2.imshow('frame',frame)
 
-            feedback_bg[:] = (127,127,127)
+            
 
             if parameters_changed == True:
-                status = ""
+                text_y = 30
+                feedback_bg[:] = (127,127,127)
+                status = "gamma: " + str(mygamma) 
+                cv2.putText(feedback_bg, status, (22, text_y), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1)
+                text_y +=15
                 for item in canny.items():
                     status = "canny " + item[0] + ": " + str(item[1]) 
                     cv2.putText(feedback_bg, status, (22, text_y), cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1)
