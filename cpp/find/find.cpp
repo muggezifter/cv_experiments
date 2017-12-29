@@ -44,13 +44,13 @@ int main( int argc, char** argv)
         // ballpark check aspectratio and area 
         if (0.8 < aspectRatio and aspectRatio < 1.2 and 10000 < area and area < 15000) {
             if(found_sq == false and approx.size() >= 4 and approx.size() <= 8) {
-                drawContours( image, contours, i, sq_color, 2, LINE_AA, hierarchy, 0 );
+                drawContours( image, contours, i, sq_color, 2, 8, hierarchy, 0 );
                 // cout << "square: " << area << " - " << approx.size() << endl;  
                 drawCross(image, approx, sq_color);
                 found_sq = true;    
             }  
             if(found_ci == false and approx.size() > 8) {
-                drawContours( image, contours, i, ci_color, 2, LINE_AA, hierarchy, 0 );
+                drawContours( image, contours, i, ci_color, 2, 8, hierarchy, 0 );
                 // cout << "circle: " << area << " - " << approx.size() << endl;
                 drawCross(image, approx, ci_color);
                 found_ci = true;

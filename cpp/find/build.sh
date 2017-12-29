@@ -2,7 +2,9 @@
 
 echo "compiling..."
 
-g++ `pkg-config --cflags --libs opencv` find.cpp  -v -WCL4 -o../build/Find
+if [ "$(uname)" == "Darwin" ]; then
+echo "mac"
+g++ `pkg-config --cflags --libs opencv` find.cpp  -v -Wall -o../build/Find
 
 # expands to:
 # g++ -I/usr/local/Cellar/opencv/3.3.1_1/include/opencv -I/usr/local/Cellar/opencv/3.3.1_1/include 
@@ -14,5 +16,9 @@ g++ `pkg-config --cflags --libs opencv` find.cpp  -v -WCL4 -o../build/Find
 # -lopencv_ml -lopencv_ximgproc -lopencv_calib3d -lopencv_features2d -lopencv_highgui -lopencv_videoio -lopencv_flann 
 # -lopencv_xobjdetect -lopencv_imgcodecs -lopencv_objdetect -lopencv_xphoto -lopencv_imgproc -lopencv_core 
 # find.cpp  -v -WCL4 -o../build/Find
-
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+echo "linux"
+g++ -I/usr/local/include/opencv -I/usr/local/include/opencv2 -L/usr/local/lib/ -g -o../build/Find -Wall find.cpp `pkg-config --libs opencv`
+# -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lopencv_video -lopencv_features2d -lopencv_calib3d -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_stitching
+fi
 echo "done"
